@@ -12,7 +12,7 @@ def baixar():
     
     try:
         # Caminho do FFmpeg
-        ffmpeg_path = r'C:\Users\Douglas Oliveira\Documents\GitHub\PROGRAMA-DE-DOWNLOAD\ffmpeg\bin\ffmpeg.exe'
+        ffmpeg_path = r'ffmpeg\bin\ffmpeg.exe'
 
         # Configuração inicial para listar as opções de formatos
         ydl_opts = {'ffmpeg_location': ffmpeg_path}
@@ -27,8 +27,13 @@ def baixar():
 
         if media_type == 'audio':
             # Opções de qualidade para áudio
-            qualidade_audio = input("Escolha a qualidade do áudio (128, 192, 256, 320): ")
-            
+            qualidade_audio = input("Escolha a qualidade do áudio (1 =alto, 2 =medio, 3 =baixo): ")
+            if qualidade_audio == '1':
+                qualidade_audio = '320'
+            elif qualidade_audio == '2':
+                qualidade_audio = '256'
+            elif qualidade_audio == '3':
+                qualidade_audio = '128'
             # Filtrar os formatos de áudio
             audio_formats = [fmt for fmt in formats if fmt.get('vcodec') == 'none']
             if not audio_formats:
