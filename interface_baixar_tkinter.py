@@ -17,8 +17,26 @@ def iniciar_download():
     # Extrair informações do vídeo
     with YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(url, download=False)
-        formats = info_dict.get('formats', [])
-    
+
+    # Verificar se é playlist
+    if 'entries' in info_dict:
+        # É uma playlist
+        entries = info_dict['entries']
+        total_videos = len(entries)
+        messagebox.showinfo("Playlist detectada", f"Playlist detectada com {total_videos} vídeos.")
+            
+
+        # Baixar todos os vídeos da playlist
+        for video in entries:
+            processar_download(video, ydl_opts, media)
+    else:
+        # É um único vídeo
+        processar_download(info_dict, ydl_opts, media)
+
+def processar_download(info_dict, ydl_opts, media):
+
+    formats = info_dict.get('formats', [])
+
     if media == 'audio':
         qualidade = audio_quality.get().lower()
         # filtro de qualidade do audio
@@ -45,7 +63,7 @@ def iniciar_download():
             'preferredquality': qualidade,  # Qualidade do áudio
         }]
 
-        print(f"URL: {url}, Tipo: {media}, Qualidade: {qualidade}")
+        print(f"URL: {info_dict}, Tipo: {media}, Qualidade: {qualidade}")
     else:
         qualidade = video_quality.get()
 
@@ -63,13 +81,14 @@ def iniciar_download():
 
         ydl_opts['format'] = chosen_format['format_id']
         ydl_opts['merge_output_format'] = 'mp4'  # Formato MP4 para vídeo
+        print(f"Baixando vídeo: {info_dict['title']} em qualidade {qualidade}...")
 
     # Configurar a pasta de saída
-    ydl_opts['outtmpl'] = './downloads/%(title)s.%(ext)s'
+    ydl_opts['outtmpl'] = f"./downloads/{info_dict['title']}.%(ext)s"
 
     # Fazer o download
     with YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
+        ydl.download([info_dict['webpage_url']])
 
     print("Download concluído!")
 
