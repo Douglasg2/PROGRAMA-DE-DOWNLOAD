@@ -1,5 +1,4 @@
 import os
-from tkinter import messagebox
 from yt_dlp import YoutubeDL
 
 # Função para baixar o vídeo ou áudio
